@@ -1,0 +1,12 @@
+---
+- name: Create Credentials
+  tower_credential:
+    name: "{{ credential.ansible_network_os }} Local Admin | default('Global Network Admin') "
+    description: "{{ credential.name }} Team Description"
+    organization: "{{ credential.organization | default('Default') }}"
+    state: "{{ credential.state | default('present') }}"
+    username: "{{ credential.username | default('admin') }}"
+    password: "{{ credential.password | default('admin') }}"
+    tower_config_file: tower_cli.cfg
+  loop:
+  - "{{ credentials }}"
