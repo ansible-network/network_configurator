@@ -1,0 +1,35 @@
+---
+- name: Create Inventory
+  tower_inventory:
+    name: "{{ item.name | default('Network Nodes') }}"
+    organization: "{{ item.organization }}"
+    description: "{{ item.description }}"
+    variables: "{{ item.variables | join('\n') }}"
+    state: "{{ item.state | default('present') }}"
+    tower_config_file: tower_cli.cfg
+  with_items: 
+  - "{{ inventory }}"
+
+- name: Create Group
+  tower_group:
+    name: "{{ item.1.name }}"
+    inventory: "{{ item.0.name | default('Network Nodes') }}"
+    description: "{{ item.1.description }}"
+    variables: "{{ item.1.variables | join('\n') }}"
+    state: "{{ item.1.state | default('present') }}"
+    tower_config_file: tower_cli.cfg
+  with_subelements:
+  - "{{ inventory }}"
+  - group
+
+- name: Create Host
+  tower_host:
+    name: "{{ item.1.name }}"
+    inventory: "{{ item.0.name | default('Network Nodes') }}"
+    description: "{{ item.1.description }}"
+    variables: "ansible_host: {{ item.1.hostname }}"
+    state: "{{ item.1.state | default('present') }}"
+    tower_config_file: tower_cli.cfg
+  with_subelements:
+  - "{{ inventory }}"
+  - host
