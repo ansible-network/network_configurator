@@ -1,0 +1,17 @@
+---
+- import_role:
+    name: tower_team_accounts
+    tasks_from: configure_team_accounts
+  vars:
+    teams:
+    - name: Network Operations1
+      description: This is Network Operations team
+      organization: Default
+      state: present
+    - name: Network Engineering1
+      description: This is Network Engineering team
+      organization: Default
+      state: present
+    - name: Network Administrators1
+      organization: Default
+      state: present
