@@ -1,0 +1,30 @@
+---  
+- import_role:
+    name: tower_user_accounts
+    tasks_from: configure_user_accounts
+  vars:
+    users:
+    - username: netop1
+      password: netop
+      email: netop@netop.com
+      first_name: Network
+      last_name: Operator
+      user_privilege: no
+      tower_verify_ssl: no
+      state: present
+    - username: netdev1
+      password: netdev
+      email: netdev@netdev.com
+      first_name: Network
+      last_name: Developer
+      user_privilege: no
+      tower_verify_ssl: no
+      state: present
+    - username: netadmin1
+      password: netadmin
+      email: netadmin@netadmin.com
+      first_name: Network
+      last_name: Administrator
+      user_privilege: yes
+      tower_verify_ssl: yes
+      state: present
