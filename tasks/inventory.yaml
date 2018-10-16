@@ -1,0 +1,37 @@
+---
+- import_role:
+    name: tower_inventory
+    tasks_from: configure_inventory
+  vars:
+    inventory:
+    - name: Network_Inventory
+      description: this is test description for inventory
+      organization: Default
+      state: present
+      variables:
+        - "ansible_connection: network_cli"
+        - "ansible_python_interpreter: python"
+      group:
+      - name: eos
+        description: this is test description for eos group
+        ansible_network_os: eos
+        state: present
+        variables:
+          - "ansible_become: 'yes'"
+          - "ansible_become_method: enable"
+          - "ansible_network_os: eos"
+          - "ansible_network_provider: ansible-network.arista_eos"
+      - name: ios
+        description: this is test description for ios group
+        state: present
+        variables:
+          - "ansible_network_os: ios"
+      host:
+      - name: eos1
+        description: this is test description for eos host
+        state: present
+        hostname: an-veos-01.ansible.eng.rdu2.redhat.com
+      - name: ios1
+        description: this is test description for ios host
+        state: present
+        hostname: an-ios-01.ansible.eng.rdu2.redhat.com
