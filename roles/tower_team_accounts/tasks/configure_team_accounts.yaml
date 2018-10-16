@@ -1,0 +1,10 @@
+---
+- name: Configure Team Accounts
+  tower_team:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default('This is the test team') }}"
+    organization: "{{ item.organization | default('Default') }}"
+    state: "{{ item.state | default('present') }}"
+    tower_config_file: "tower_cli.cfg"
+  with_items:
+  - "{{ teams }}"
