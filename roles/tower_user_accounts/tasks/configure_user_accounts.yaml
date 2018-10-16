@@ -1,0 +1,14 @@
+---
+- name: Create User Accounts
+  tower_user:
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+    email: "{{ item.email | default('testPass@123') }}"
+    first_name: "{{ item.first_name }}"
+    last_name: "{{ item.last_name }}"
+    superuser: "{{ item.user_privilege }}"
+    tower_verify_ssl: "{{ item.tower_verify_ssl | default('no') }}"
+    state: "{{ item.state }}"
+    tower_config_file: "tower_cli.cfg"
+  with_items: 
+  - "{{ users }}"
