@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Install Inventory
+    include_tasks: tasks/inventory.yaml
+  - name: Install User Accounts
+    include_tasks: tasks/users.yaml
+  - name: Install Team Accounts
+    include_tasks: tasks/teams.yaml
