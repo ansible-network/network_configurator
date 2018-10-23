@@ -1,1 +1,1 @@
-# network_installer
+# network_configurator
