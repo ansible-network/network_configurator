@@ -1,2 +1,13 @@
 ---
 # vars file for tower_project
+#project_defaults:
+project_name: Ansible Network
+project_description: This is Default Project Ansible Network!
+project_organization: Default
+project_scm_type: manual
+state: present
+username: admin
+password: admin
+tower_vault_host: an-tower-01.ansible.eng.rdu2.redhat.com
+tower_vault_username: sjaiswal
+tower_vault_password: ansible
