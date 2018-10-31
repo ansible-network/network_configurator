@@ -1,0 +1,18 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars:
+    backup_path: "/opt/network"
+    backup_filename: "{{ inventory_hostname_short }}.cfg"
+
+  tasks:
+    - name: backup active configuration from remote devices
+      include_role:
+        name: ansible-network.config_manager
+        tasks_from: get
+
+    - name: write configuration to ansible controller
+      copy:
+        content: "{{ configuration }}"
+        dest: "{{ backup_path }}/{{ backup_filename }}"
