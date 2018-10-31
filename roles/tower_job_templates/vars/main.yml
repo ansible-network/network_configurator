@@ -1,0 +1,12 @@
+---
+# vars file for tower_job_templates
+default_project: Ansible Network
+default_inventory: Network Nodes
+default_teams:
+- { name: 'Network Operations', permission: 'use'}
+- { name: 'Network Engineering', permission: 'use'}
+- { name: 'Network Administrators', permission: 'admin'}
+default_users:
+- { name: 'netop', permission: 'use'}
+- { name: 'netdev', permission: 'use'}
+- { name: 'netadmin', permission: 'admin'}
