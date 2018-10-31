@@ -1,14 +1,60 @@
 ---
 - name: Create User Accounts
   tower_user:
-    username: "{{ item.username }}"
-    password: "{{ item.password }}"
-    email: "{{ item.email | default('testPass@123') }}"
-    first_name: "{{ item.first_name }}"
-    last_name: "{{ item.last_name }}"
-    superuser: "{{ item.user_privilege }}"
-    tower_verify_ssl: "{{ item.tower_verify_ssl | default('no') }}"
-    state: "{{ item.state }}"
-    tower_config_file: "tower_cli.cfg"
-  with_items: 
-  - "{{ users }}"
+    username: "{{ user.username }}"
+    password: "{{ user.password | default(user_default_password) }}"
+    email: "{{ user.email }}"
+    first_name: "{{ user.first_name }}"
+    last_name: "{{ user.last_name }}"
+    superuser: "{{ user.user_privilege }}"
+    tower_verify_ssl: "{{ user.tower_verify_ssl | default(omit) }}"
+    auditor: "{{ user.auditor | default(omit) }}"
+    state: "{{ user.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+
+- name: Configure and Tag Project to User's account with permission privilege
+  tower_role:
+    project: "{{ user.project }}"
+    user: "{{ user.username }}"
+    role: "{{ user.project_role  }}"
+    tower_verify_ssl: "{{ user.tower_verify_ssl | default(omit) }}"
+    state: "{{ user.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+  when: user.project is defined
+
+- name: Configure and Tag Inventory to User's account with permission privilege
+  tower_role:
+    inventory: "{{ user.inventory }}"
+    user: "{{ user.username }}"
+    role: "{{ user.inventory_role }}"
+    tower_verify_ssl: "{{ user.tower_verify_ssl | default(omit) }}"
+    state: "{{ user.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+  when: user.inventory is defined
+
+- name: Configure and Tag Project to Default User's account with permission privilege
+  tower_role:
+    project: "{{ default_project }}"
+    user: "{{ default_user.name }}"
+    role: "{{ default_user.permission }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ default_users }}"
+  loop_control:
+    loop_var: default_user
