@@ -1,9 +1,13 @@
 ---
 - hosts: localhost
   tasks:
+  - name: Install Project
+    include_tasks: tasks/projects.yaml
   - name: Install Inventory
     include_tasks: tasks/inventory.yaml
   - name: Install User Accounts
     include_tasks: tasks/users.yaml
   - name: Install Team Accounts
     include_tasks: tasks/teams.yaml
+  - name: Install Credentials
+    include_tasks: tasks/credentials.yaml
