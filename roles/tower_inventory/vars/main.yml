@@ -1,2 +1,20 @@
 ---
 # vars file for tower_inventory
+default_inventory: Network Nodes
+default_organization: Default
+default_description: This is Default Inventory Network Nodes!
+default_group_description: This is Default Group description.
+default_host_description: This is Default Host description.
+tower_vault_host: an-tower-01.ansible.eng.rdu2.redhat.com
+tower_vault_password: ansible
+tower_vault_username: sjaiswal
+variables:
+  default:
+    ansible_become: yes
+    ansible_become_method: enable
+  eos:
+    ansible_network_os: eos
+    ansible_network_provider: ansible-network.arista_eos
+  ios:
+    ansible_network_os: ios
+    ansible_network_provider: ansible-network.cisco_ios
