@@ -1,2 +1,14 @@
 ---
 # vars file for tower_team_account
+default_project: Ansible Network
+default_inventory: Network Nodes
+default_description: This is default Team description
+default_organization: Default
+default_teams:
+- { name: 'Network Operations', permission: 'use'}
+- { name: 'Network Engineering', permission: 'use'}
+- { name: 'Network Administrators', permission: 'admin'}
+default_users:
+- { name: 'netop', permission: 'use'}
+- { name: 'netdev', permission: 'use'}
+- { name: 'netadmin', permission: 'admin'}
