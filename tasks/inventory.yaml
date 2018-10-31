@@ -1,37 +1,39 @@
 ---
+- include_vars:
+    file: ../inventory.yaml
+    name: inventory_new
+
+- name: Parsing Inventory
+  set_fact:
+    parse_inventory: "{{ parse_inventory +  [item] }}"
+  loop: "{{ inventory_new | dict2items }}"
+
+- name: Passing values to Inventory items
+  set_fact:
+    inventory_name: "{{ item.value.name | default('Network Nodes') }}"
+    inventory_description: "{{ item.value.description | default('This is Default Inventory Network Nodes') }}"
+    inventory_organization: "{{ item.value.organization | default('Default') }}"
+    inventory_variables: "{{ item.value.variables }}"
+    hosts: "{{ item.value.hosts }}"
+  loop: "{{ parse_inventory }}"
+
+- set_fact:
+    host_names: "{{ host_names + [item.value] }}"
+  loop: "{{ hosts | dict2items }}"
+  when: item.value != "vars"
+
 - import_role:
     name: tower_inventory
     tasks_from: configure_inventory
   vars:
+    parse_inventory: []
+    group_names: []
+    host_names: []
+
     inventory:
-    - name: Network_Inventory
-      description: this is test description for inventory
-      organization: Default
-      state: present
-      variables:
-        - "ansible_connection: network_cli"
-        - "ansible_python_interpreter: python"
-      group:
-      - name: eos
-        description: this is test description for eos group
-        ansible_network_os: eos
-        state: present
-        variables:
-          - "ansible_become: 'yes'"
-          - "ansible_become_method: enable"
-          - "ansible_network_os: eos"
-          - "ansible_network_provider: ansible-network.arista_eos"
-      - name: ios
-        description: this is test description for ios group
-        state: present
-        variables:
-          - "ansible_network_os: ios"
-      host:
-      - name: eos1
-        description: this is test description for eos host
-        state: present
-        hostname: an-veos-01.ansible.eng.rdu2.redhat.com
-      - name: ios1
-        description: this is test description for ios host
-        state: present
-        hostname: an-ios-01.ansible.eng.rdu2.redhat.com
+    - name: "{{ inventory_name }}"
+      description: "{{ inventory_description }}"
+      organization: "{{ inventory_organization }}"
+      variables: "{{ inventory_variables }}"
+      host_names: "{{ host_names }}"
+      hosts: "{{ hosts }}"
