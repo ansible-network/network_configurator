@@ -1,0 +1,101 @@
+---
+- name: Saving template name for giving default permission to template
+  set_fact:
+    template_name: "{{ template.name }}"
+  loop: "{{ templates }}"
+  loop_control:
+    loop_var: template
+  when:
+  - template.name is defined
+  
+- name: Create tower Job Template
+  tower_job_template:
+    name: "{{ template.name }}"
+    description: "{{ template.description | default(default_template_description) }}"
+    job_type: "{{ template.job_type }}"
+    ask_job_type: "{{ template.ask_job_type | default(omit) }}"
+    inventory: "{{ template.inventory }}"
+    ask_inventory: "{{ template.ask_inventory | default(omit) }}"
+    project: "{{ template.project }}"
+    playbook: "{{ template.playbook }}"
+    credential: "{{ template.credential }}"
+    ask_credential: "{{ template.ask_credential | default(omit) }}"
+    machine_credential: "{{ template.machine_credential | default(omit) }}"
+    network_credential: "{{ template.network_credential | default(omit) }}"
+    job_tags: "{{ template.job_tags | default(omit) }}"
+    ask_tags: "{{ template.ask_tags | default(omit) }}"
+    skip_tags: "{{ template.skip_tags | default(omit) }}"
+    become_enabled: "{{ template.become_enabled | default(omit) }}"
+    cloud_credential: "{{ template.cloud_credential | default(omit) }}"
+    forks: "{{ template.forks | default(omit) }}"
+    host_config_key: "{{ template.host_config_key | default(omit) }}"
+    limit: "{{ template.limit | default(omit) }}"
+    verbosity: "{{ template.verbosity | default(omit) }}"
+    state: "{{ template.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ templates }}"
+  loop_control:
+    loop_var: template
+  when:
+  - template.name is defined
+  - template.job_type is defined
+  - template.project is defined
+  - template.playbook is defined
+
+- name: Configure and Tag Template to Default Team's account with permission privilege
+  tower_role:
+    job_template: "{{ template.name }}"
+    team: "{{ template.team }}"
+    role: "{{ template.project_role }}"
+    tower_verify_ssl: "{{ template.tower_verify_ssl | default(omit) }}"
+    state: "{{ template.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ template }}"
+  loop_control:
+    loop_var: template
+  when: template.team is defined
+
+- name: Configure and Tag Template to User's account with permission privilege
+  tower_role:
+    job_template: "{{ template.name }}"
+    user: "{{ template.user }}"
+    role: "{{ template.project_role }}"
+    tower_verify_ssl: "{{ template.tower_verify_ssl | default(omit) }}"
+    state: "{{ template.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ template }}"
+  loop_control:
+    loop_var: template
+  when: template.user is defined
+
+- name: Configure and Tag Project to Default Team's account with permission privilege
+  tower_role:
+    job_template: "{{ template_name }}"
+    team: "{{ default_team.name }}"
+    role: "{{ default_team.permission }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ default_teams }}"
+  loop_control:
+    loop_var: default_team
+  when: default_teams is defined
+
+- name: Configure and Tag Project to Default User's account with permission privilege
+  tower_role:
+    job_template: "{{ template_name }}"
+    user: "{{ default_user.name }}"
+    role: "{{ default_user.permission }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_password: "{{ tower_vault_password }}"
+    tower_username: "{{ tower_vault_username }}"
+  loop: "{{ default_users }}"
+  loop_control:
+    loop_var: default_user
+  when: default_users is defined
