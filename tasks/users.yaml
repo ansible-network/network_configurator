@@ -4,23 +4,35 @@
     tasks_from: configure_user_accounts
   vars:
     users:
-    - username: netop1
+    - username: netop
       password: netop
+      project: infra
+      project_role: use
+      inventory: Network_Inventory
+      inventory_role: use
+      credential: Network Admin
+      credential_role: use
       email: netop@netop.com
       first_name: Network
       last_name: Operator
       user_privilege: no
       tower_verify_ssl: no
       state: present
-    - username: netdev1
+    - username: netdev
       password: netdev
+      project: infra
+      project_role: use
+      inventory: Network_Inventory
+      inventory_role: use
+      credential: Network Admin
+      credential_role: use
       email: netdev@netdev.com
       first_name: Network
       last_name: Developer
       user_privilege: no
       tower_verify_ssl: no
       state: present
-    - username: netadmin1
+    - username: netadmin
       password: netadmin
       email: netadmin@netadmin.com
       first_name: Network
