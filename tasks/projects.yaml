@@ -1,0 +1,14 @@
+---
+- import_role:
+    name: tower_projects
+    tasks_from: configure_projects
+  vars:
+    projects:
+    #- name: "Ansible Network"
+    -  local_path: test_configurator
+    #  description: This is test description for IOS credential
+    #  organization: Default
+    #  kind: ssh
+    #  username: admin_new
+    #  password: test123
+    #  state: present

@@ -1,12 +1,21 @@
 ---
-- name: Create Credentials
-  tower_credential:
-    name: "{{ credential.ansible_network_os }} Local Admin | default('Global Network Admin') "
-    description: "{{ credential.name }} Team Description"
-    organization: "{{ credential.organization | default('Default') }}"
-    state: "{{ credential.state | default('present') }}"
-    username: "{{ credential.username | default('admin') }}"
-    password: "{{ credential.password | default('admin') }}"
-    tower_config_file: tower_cli.cfg
-  loop:
-  - "{{ credentials }}"
+- name: Create Projects
+  tower_project:
+    name: "{{ project.name | default(project_name) }}"
+    description: "{{ project.description | default(project_description) }}"
+    organization: "{{ project.organization | default(project_organization) }}"
+    local_path: "{{ project.local_path | default(omit) }}"
+    scm_type: "{{ project.scm_type | default(project_scm_type) }}"
+    scm_credential: "{{ project.scm_credential | default(omit) }}"
+    scm_clean: "{{ project.scm_clean | default(omit) }}"
+    scm_branch: "{{ project.scm_branch | default(omit) }}"
+    scm_update_on_launch: "{{ project.scm_update_on_launch | default(omit) }}"
+    scm_delete_on_update: "{{ project.scm_delete_on_update | default(omit) }}"
+    scm_url: "{{ project.scm_url | default(omit) }}"
+    state: "{{ project.state | default(omit) }}"
+    tower_host: "{{ tower_vault_host }}"
+    tower_username: "{{ tower_vault_username }}"
+    tower_password: "{{ tower_vault_password }}"
+  loop: "{{ projects }}"
+  loop_control:
+    loop_var: project

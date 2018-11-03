@@ -1,0 +1,37 @@
+---
+inventory:
+  name: Network_Inventory
+  description: This is description
+  organization: Default
+  variables:
+    ansible_python_interpreter: python
+    ansible_connection: network_cli
+
+  hosts:
+    eos:
+      eos_01:
+        ansible_host: hostname/ip
+        description: This is description for eos_01
+      eos_02:
+        ansible_host: hostname/ip
+        state: present
+      eos_03:
+        {}
+      vars:
+        ansible_network_os: eos
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_network_provider: ansible-network.arista_eos
+
+    ios:
+      ios_01:
+        ansible_host: hostname/ip
+        description: This is description for ios_01
+        state: present
+      ios_02:
+        {}
+      vars:
+        ansible_network_os: ios
+        ansible_become: yes
+        ansible_become_method: enable
+        ansible_network_provider: ansible-network.cisco_ios
