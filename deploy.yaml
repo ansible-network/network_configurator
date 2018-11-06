@@ -1,0 +1,6 @@
+---
+- hosts: tower
+
+  roles:
+    - name: ansible_tower
+
