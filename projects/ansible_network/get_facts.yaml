@@ -1,9 +1,0 @@
----
-- hosts: all
-  gather_facts: no
-
-  tasks:
-    - name: retrieve facts from target device
-      include_tasks:
-        name: "{{ ansible_network_provider }}"
-        tasks_from: get_facts

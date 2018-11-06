@@ -1,6 +1,0 @@
----
-- import_role:
-    name: tower_job_templates
-    tasks_from: configure_job_templates
-  vars:
-    job_templates:
