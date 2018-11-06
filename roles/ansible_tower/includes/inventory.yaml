@@ -1,0 +1,85 @@
+---
+- block:
+    - name: configure tower inventory
+      tower_inventory:
+        name: "{{ item.name }}"
+        organization: "{{ item.organization | default(default_tower_organization) }}"
+
+        description: "{{ item.description | default(omit) }}"
+        variables: "{{ item.variables | default(omit) }}"
+
+        state: "{{ item.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+    - name: configure groups in inventory
+      tower_group:
+        name: "{{ group.key }}"
+        inventory: "{{ item.name }}"
+
+        description: "{{ group.value.description | default(omit) }}"
+        variables: "{{ group.value.vars | default(omit) }}"
+
+        state: "{{ group.value.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      loop: "{{ query('dict', item.groups | default({})) }}"
+      loop_control:
+        loop_var: group
+
+      when:
+        - item.groups is defined
+
+    - name: configure hosts in inventory
+      tower_host:
+        name: "{{ host.key }}"
+        inventory: "{{ item.name }}"
+
+        description: "{{ host.value.description | default(omit) }}"
+        variables: "{{ host.value.vars | default(omit) }}"
+
+        state: "{{ host.value.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      loop: "{{ query('dict', item.hosts | default({})) }}"
+      loop_control:
+        loop_var: host
+
+      when:
+      - item.hosts is defined
+
+
+    - name: assign permissions to team
+      tower_role:
+        team: "{{ team.name }}"
+        role: "{{ team.role | default('use') }}"
+        inventory: "{{ item.name }}"
+
+        state: "{{ team.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      loop: "{{ item.teams }}"
+      loop_control:
+        loop_var: team
+
+      when:
+        - item.teams is defined
+
+  connection: local
+  tags:
+    - inventory

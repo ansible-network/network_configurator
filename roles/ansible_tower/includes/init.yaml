@@ -1,0 +1,15 @@
+---
+- name: validate tower_host is set
+  fail:
+    msg: "missing required variable: tower_host"
+  when: tower_host is undefined
+
+- name: validate tower_username is set
+  fail:
+    msg: "missing required variable: tower_username"
+  when: tower_username is undefined
+
+- name: validate tower_password is set
+  fail:
+    msg: "missing required variable: tower_password"
+  when: tower_password is undefined

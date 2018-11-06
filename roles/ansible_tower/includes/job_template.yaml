@@ -1,0 +1,81 @@
+---
+- name: handle job_template block
+  block:
+    - name: validate item.name is defined
+      fail:
+        msg: "missing required value for job_template: item.name"
+      when: item.name is undefined
+
+    - name: validate item.playbook is defined
+      fail:
+        msg: "missing required value for job_template: item.playbook"
+      when: item.playbook is undefined
+
+    - name: validate item.project is defined
+      fail:
+        msg: "missing required value for job_template: item.project"
+      when: item.project is undefined
+
+    - name: validate item.job_type is defined and valid
+      fail:
+        msg: "missing or invalid value for job_template: item.job_type"
+      when:
+        - item.job_type is undefined
+        - item.job_type not in ('run', 'check')
+
+    - name: validate item.inventory is defined
+      fail:
+        msg: "missing required value for job_template: item.inventory"
+      when: item.inventory is undefined
+
+    - name: validate item.credential is defined
+      fail:
+        msg: "missing required value for job_template: item.credential"
+      when: item.credential is undefined
+
+    - name: configure job template
+      tower_job_template:
+        name: "{{ item.name }}"
+
+        playbook: "{{ item.playbook }}"
+        project: "{{ item.project }}"
+        job_type: "{{ item.job_type }}"
+        inventory: "{{ item.inventory }}"
+
+        vault_credential: "{{ item.credential | default(omit) }}"
+        description: "{{ item.description | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      # job_templates in tower support 'admin', 'execute', and 'read'
+      # permissions
+    - name: assign permissions to team
+      tower_role:
+        team: "{{ team.name }}"
+        role: "{{ team.role | default('use') }}"
+
+        job_template: "{{ item.name }}"
+
+        state: "{{ team.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      loop: "{{ item.teams }}"
+      loop_control:
+        loop_var: team
+
+      when:
+        - item.teams is defined
+        - item.state | default('present') == 'present'
+
+
+  connection: local
+  tags:
+    - job_templates

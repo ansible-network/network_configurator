@@ -1,0 +1,23 @@
+---
+- name: handle team block
+  block:
+    - name: validate item.name is defined
+      fail:
+        msg: "missing required value for team: item.name"
+      when: item.name is undefined
+
+    - name: configure team
+      tower_team:
+        name: "{{ item.name }}"
+        organization: "{{ item.organization | default(default_tower_organization) }}"
+
+        state: "{{ item.state | default(omit) }}"
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+  connection: local
+  tags:
+    - teams
