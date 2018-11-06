@@ -1,0 +1,95 @@
+---
+- block:
+    - name: validate item.name is defined
+      fail:
+        msg: "missing required value for project: item.name"
+      when: item.name is undefined
+
+    - name: validate item.scm_type is defined
+      fail:
+        msg: "missing required value for project: item.scm_type"
+      when: item.scm_type is undefined
+
+    - name: validate item.path is defined
+      fail:
+        msg: "missing required value for project: item.path"
+      when:
+        - item.scm_type == 'manual'
+        - item.path is undefined
+
+    - name: copy project files to tower
+      synchronize:
+        src: "{{ item.path }}"
+        dest: /var/lib/awx/projects
+      become: yes
+      become_user: awx
+      when:
+        - item.state | default('present') in ('present', None)
+        - item.scm_type == 'manual'
+        - item.path is defined
+      connection: smart
+
+    - name: remove project files from tower server
+      file:
+        path: "/var/lib/awx/projects/{{ item.path | basename }}"
+        state: absent
+      become: yes
+      when:
+        - item.state | default('present') == 'absent'
+        - item.scm_type | default(None) == 'manual'
+        - item.path is defined
+      connection: smart
+
+    - block:
+        - name: configure project
+          tower_project:
+            name: "{{ item.name }}"
+            organization: "{{ item.organization | default(default_tower_organization) }}"
+
+            description: "{{ item.description | default(omit) }}"
+            scm_type: "{{ item.scm_type | default(omit) }}"
+
+            local_path: "{{ item.path | basename | default(omit) }}"
+
+            scm_url: "{{ item.scm_url | default(omit) }}"
+            scm_branch: "{{ item.scm_branch | default(omit) }}"
+            scm_credential: "{{ item.scm_credential | default(omit) }}"
+
+            scm_clean: "{{ item.scm_clean | default(omit) }}"
+            scm_update_on_launch: "{{ item.scm_update_on_launch | default(omit) }}"
+            scm_delete_on_update: "{{ item.scm_delete_on_update | default(omit) }}"
+
+            state: "{{ item.state | default(omit) }}"
+
+            tower_host: "{{ tower_host }}"
+            tower_username: "{{ tower_username }}"
+            tower_password: "{{ tower_password }}"
+            tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+          # projects in tower support 'use', 'admin', 'adhoc', 'update' and
+          # 'read' permissions
+        - name: assign permissions to team
+          tower_role:
+            team: "{{ team.name }}"
+            role: "{{ team.role | default('use') }}"
+
+            project: "{{ item.name }}"
+
+            state: "{{ team.state | default(omit) }}"
+
+            tower_host: "{{ tower_host }}"
+            tower_username: "{{ tower_username }}"
+            tower_password: "{{ tower_password }}"
+            tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+          loop: "{{ item.teams }}"
+          loop_control:
+            loop_var: team
+
+          when:
+            - item.teams is defined
+
+      connection: local
+
+  tags:
+    - projects
