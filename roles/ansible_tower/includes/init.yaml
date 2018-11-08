@@ -13,3 +13,8 @@
   fail:
     msg: "missing required variable: tower_password"
   when: tower_password is undefined
+
+- name: validate tower_state is set
+  fail:
+    msg: "missing required variable: tower_state"
+  when: tower_state is undefined
