@@ -51,6 +51,21 @@
         tower_password: "{{ tower_password }}"
         tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
 
+    - name: remove job templates
+      tower_job_template:
+        name: "{{ item.name }}"
+        playbook: "{{ item.playbook }}"
+        project: "{{ item.project }}"
+        job_type: "{{ item.job_type }}"
+        state: "{{ item.state | default(omit) }}"
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+      when:
+      - item.state is defined
+      - item.state == 'absent'
+
       # job_templates in tower support 'admin', 'execute', and 'read'
       # permissions
     - name: assign permissions to team

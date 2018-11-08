@@ -73,5 +73,15 @@
         - ansible_tower.job_templates is defined
       tags:
         - job_templates
+
+    - name: configure projects
+      include_tasks: "{{ role_path }}/includes/project.yaml"
+      loop: "{{ ansible_tower.projects }}"
+      when:
+        - ansible_tower.projects is defined
+        - tower_state == 'absent'
+      tags:
+        - project_clean
+
   when:
     - ansible_tower is defined
