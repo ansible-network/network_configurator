@@ -1,6 +1,4 @@
 ---
-- debug: var=hostvars[inventory_hostname_short]
-
 - name: configure credentials
   include_tasks: "{{ role_path }}/includes/credential.yaml"
   loop: "{{ ansible_tower_vars.credentials }}"

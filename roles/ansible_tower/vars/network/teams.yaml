@@ -1,0 +1,9 @@
+---
+- name: Network Operations
+  description: Network operations team
+
+- name: Network Engineering
+  description: Network engineering team
+
+- name: Network Administrators
+  description: Network administration team

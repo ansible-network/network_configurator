@@ -1,6 +1,6 @@
 ---
-- hosts: tower
-
+- name: Deploy catalogs to Ansible Tower hosts
+  hosts: tower
   roles:
-    - name: ansible_tower
+    - { name: ansible_tower }
 

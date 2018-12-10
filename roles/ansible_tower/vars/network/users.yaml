@@ -1,0 +1,24 @@
+---
+- name: netop
+  password: ansible
+  email: netops@ansible.com
+  first_name: Network
+  last_name: Operations
+  teams:
+    - Network Operations
+
+- name: neteng
+  password: ansible
+  email: neteng@ansible.com
+  first_name: Network
+  last_name: Engineering
+  teams:
+    - Network Engineering
+
+- name: netadmin
+  password: ansible
+  email: netadmin@ansible.com
+  first_name: Network
+  last_name: Administrator
+  teams:
+    - Network Administrators

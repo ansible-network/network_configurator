@@ -1,5 +1,29 @@
 ---
 - block:
+    - name: remove job templates
+      tower_job_template:
+        name: "{{ job_template_item.name }}"
+        playbook: "{{ job_template_item.playbook }}"
+        project: "{{ job_template_item.project }}"
+        job_type: "{{ job_template_item.job_type }}"
+
+        state: absent
+
+        tower_host: "{{ tower_host }}"
+        tower_username: "{{ tower_username }}"
+        tower_password: "{{ tower_password }}"
+        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+
+      when:
+        - ansible_tower_vars.job_templates is defined
+        - job_template_item.state | default(None) == 'absent'
+
+      loop: "{{ ansible_tower_vars.job_templates }}"
+      loop_control: { loop_var: job_template_item }
+
+      connection: local
+      ignore_errors: yes
+
     - name: validate item.name is defined
       fail:
         msg: "missing required value for project: item.name"
@@ -49,7 +73,7 @@
             description: "{{ item.description | default(omit) }}"
             scm_type: "{{ item.scm_type | default(omit) }}"
 
-            local_path: "{{ item.path | basename | default(omit) }}"
+            #local_path: "{{ item.path | basename | default(omit) }}"
 
             scm_url: "{{ item.scm_url | default(omit) }}"
             scm_branch: "{{ item.scm_branch | default(omit) }}"
@@ -65,6 +89,42 @@
             tower_username: "{{ tower_username }}"
             tower_password: "{{ tower_password }}"
             tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+          register: ansible_tower_project_facts
+
+        - block:
+          - name: update the project (if necessary)
+            uri:
+              url: "{{ tower_host }}/api/v2/projects/{{ ansible_tower_project_facts.id }}/update/"
+              method: POST
+
+              user: "{{ tower_username }}"
+              password: "{{ tower_password }}"
+              force_basic_auth: True
+              validate_certs: False
+
+              status_code: 202
+
+              body_format: json
+              body:
+                id: "{{ ansible_tower_project_facts.id }}"
+
+          - name: check project update status
+            uri:
+              url: "{{ tower_host }}/api/v2/projects/{{ ansible_tower_project_facts.id }}/update/"
+
+              user: "{{ tower_username }}"
+              password: "{{ tower_password }}"
+              force_basic_auth: True
+              validate_certs: False
+
+              body_format: json
+              body:
+                id: "{{ ansible_tower_project_facts.id }}"
+
+            register: result
+
+          when:
+            - item.scm_type | default(None) == 'git'
 
           # projects in tower support 'use', 'admin', 'adhoc', 'update' and
           # 'read' permissions

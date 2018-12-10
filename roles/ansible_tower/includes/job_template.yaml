@@ -44,27 +44,15 @@
 
         vault_credential: "{{ item.credential | default(omit) }}"
         description: "{{ item.description | default(omit) }}"
-        state: "{{ item.state | default(omit) }}"
 
-        tower_host: "{{ tower_host }}"
-        tower_username: "{{ tower_username }}"
-        tower_password: "{{ tower_password }}"
-        tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
+        state: present
 
-    - name: remove job templates
-      tower_job_template:
-        name: "{{ item.name }}"
-        playbook: "{{ item.playbook }}"
-        project: "{{ item.project }}"
-        job_type: "{{ item.job_type }}"
-        state: "{{ item.state | default(omit) }}"
         tower_host: "{{ tower_host }}"
         tower_username: "{{ tower_username }}"
         tower_password: "{{ tower_password }}"
         tower_verify_ssl: "{{ tower_verify_ssl | default(omit) }}"
       when:
-      - item.state is defined
-      - item.state == 'absent'
+        - item.state | default('present') == 'present'
 
       # job_templates in tower support 'admin', 'execute', and 'read'
       # permissions
@@ -89,7 +77,6 @@
       when:
         - item.teams is defined
         - item.state | default('present') == 'present'
-
 
   connection: local
   tags:

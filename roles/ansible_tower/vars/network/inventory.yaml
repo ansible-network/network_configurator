@@ -1,0 +1,11 @@
+---
+- name: Network Inventory
+  description: This is description
+
+  teams:
+    - name: Network Operations
+      role: use
+    - name: Network Engineering
+      role: use
+    - name: Network Administrators
+      role: admin
