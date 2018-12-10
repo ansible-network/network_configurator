@@ -1,0 +1,50 @@
+---
+- debug: var=hostvars[inventory_hostname_short]
+
+- name: configure credentials
+  include_tasks: "{{ role_path }}/includes/credential.yaml"
+  loop: "{{ ansible_tower_vars.credentials }}"
+  when:
+    - ansible_tower_vars.credentials is defined
+    - "'credentials' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'credentials' not in ansible_skip_tags"
+
+- name: configure teams
+  include_tasks: "{{ role_path }}/includes/team.yaml"
+  loop: "{{ ansible_tower_vars.teams }}"
+  when:
+    - ansible_tower_vars.teams is defined
+    - "'teams' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'teams' not in ansible_skip_tags"
+
+- name: configure user accounts
+  include_tasks: "{{ role_path }}/includes/user.yaml"
+  loop: "{{ ansible_tower_vars.users }}"
+  when:
+    - ansible_tower_vars.users is defined
+    - "'users' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'users' not in ansible_skip_tags"
+
+- name: configure inventories
+  include_tasks: "{{ role_path }}/includes/inventory.yaml"
+  loop: "{{ ansible_tower_vars.inventories }}"
+  when:
+    - ansible_tower_vars.inventories is defined
+    - "'inventory' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'inventory' not in ansible_skip_tags"
+
+- name: configure projects
+  include_tasks: "{{ role_path }}/includes/project.yaml"
+  loop: "{{ ansible_tower_vars.projects }}"
+  when:
+    - ansible_tower_vars.projects is defined
+    - "'projects' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'projects' not in ansible_skip_tags"
+
+- name: configure job_templates
+  include_tasks: "{{ role_path }}/includes/job_template.yaml"
+  loop: "{{ ansible_tower_vars.job_templates }}"
+  when:
+    - ansible_tower_vars.job_templates is defined
+    - "'job_templates' in ansible_run_tags or 'all' in ansible_run_tags"
+    - "'job_templates' not in ansible_skip_tags"

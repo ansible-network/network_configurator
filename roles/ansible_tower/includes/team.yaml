@@ -9,7 +9,7 @@
     - name: configure team
       tower_team:
         name: "{{ item.name }}"
-        organization: "{{ item.organization | default(default_tower_organization) }}"
+        organization: "{{ item.organization | default(ansible_tower_default_organization) }}"
 
         state: "{{ item.state | default(omit) }}"
 

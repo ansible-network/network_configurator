@@ -1,0 +1,18 @@
+---
+- name: load vars file
+  set_fact:
+     ansible_tower_catalog_item_vars: "{{ lookup('file', item_vars) | from_yaml }}"
+  with_first_found:
+    - files:
+        - "{{ item }}.yaml"
+      paths:
+        - "{{ ansible_tower_catalog_path }}"
+      skip: yes
+  loop_control:
+    loop_var: item_vars
+  register: ansible_tower_catalog_vars_lookup
+
+- name: update ansible_tower_vars
+  set_fact:
+    ansible_tower_vars: "{{ ansible_tower_vars | combine({item: ansible_tower_catalog_item_vars}) }}"
+  when: ansible_tower_catalog_vars_lookup is not skipped

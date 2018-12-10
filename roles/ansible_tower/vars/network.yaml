@@ -1,0 +1,50 @@
+---
+inventories:
+  - name: Network Inventory
+    description: This is description
+
+    teams:
+      - name: Network Operations
+        role: use
+      - name: Network Engineering
+        role: use
+      - name: Network Administrators
+        role: admin
+
+
+teams:
+  - name: Network Operations
+    description: Network operations team
+
+  - name: Network Engineering
+    description: Network engineering team
+
+  - name: Network Administrators
+    description: Network administration team
+
+users:
+  - name: netop
+    password: ansible
+    email: netops@ansible.com
+    first_name: Network
+    last_name: Operations
+    teams:
+      - Network Operations
+
+  - name: neteng
+    password: ansible
+    email: neteng@ansible.com
+    first_name: Network
+    last_name: Engineering
+    teams:
+      - Network Engineering
+
+  - name: netadmin
+    password: ansible
+    email: netadmin@ansible.com
+    first_name: Network
+    last_name: Administrator
+    teams:
+      - Network Administrators
+
+

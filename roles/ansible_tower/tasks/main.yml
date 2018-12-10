@@ -1,87 +1,21 @@
 ---
 # tasks file for ansible_tower
 #
-- name: always run block
-  block:
+- block:
     - name: initialize role
       include_tasks: "{{ role_path }}/includes/init.yaml"
 
-    - name: include tower settings
-      include_vars:
-        file: "{{ tower_vars }}"
-        name: ansible_tower
-      when:
-        - ansible_tower is undefined
-        - tower_vars is defined
+    - name: set ansible_tower_catalog
+      set_fact:
+        ansible_tower_catalog: "{{ ansible_tower_enable_catalogs.split(',') }}"
 
-    - name: validate ansible_tower is defined
-      fail:
-        msg: "missing required var: ansible_tower"
-      when: ansible_tower is undefined
+    - debug: var=ansible_tower_catalog
+    - debug: var=ansible_tower_custom_catalog_path
 
-    - name: display message to stdout
-      debug:
-        msg: "applying configuration to {{ tower_host }}"
+    - name: install catalog
+      include_tasks: "{{ role_path }}/includes/loader.yaml"
+      loop: "{{ ansible_tower_enable_catalogs.split(',') }}"
+      loop_control:
+        loop_var: ansible_tower_catalog_item
   tags:
     - always
-
-- block:
-    - name: configure credentials
-      include_tasks: "{{ role_path }}/includes/credential.yaml"
-      loop: "{{ ansible_tower.credentials }}"
-      when:
-        - ansible_tower.credentials is defined
-      tags:
-        - credentials
-
-    - name: configure teams
-      include_tasks: "{{ role_path }}/includes/team.yaml"
-      loop: "{{ ansible_tower.teams }}"
-      when:
-        - ansible_tower.teams is defined
-      tags:
-        - teams
-
-    - name: configure user accounts
-      include_tasks: "{{ role_path }}/includes/user.yaml"
-      loop: "{{ ansible_tower.users }}"
-      when:
-        - ansible_tower.users is defined
-      tags:
-        - users
-
-    - name: configure inventories
-      include_tasks: "{{ role_path }}/includes/inventory.yaml"
-      loop: "{{ ansible_tower.inventories }}"
-      when:
-        - ansible_tower.inventories is defined
-      tags:
-        - inventory
-
-    - name: configure projects
-      include_tasks: "{{ role_path }}/includes/project.yaml"
-      loop: "{{ ansible_tower.projects }}"
-      when:
-        - ansible_tower.projects is defined
-      tags:
-        - projects
-
-    - name: configure job_templates
-      include_tasks: "{{ role_path }}/includes/job_template.yaml"
-      loop: "{{ ansible_tower.job_templates }}"
-      when:
-        - ansible_tower.job_templates is defined
-      tags:
-        - job_templates
-
-    - name: configure projects
-      include_tasks: "{{ role_path }}/includes/project.yaml"
-      loop: "{{ ansible_tower.projects }}"
-      when:
-        - ansible_tower.projects is defined
-        - tower_state == 'absent'
-      tags:
-        - project_clean
-
-  when:
-    - ansible_tower is defined

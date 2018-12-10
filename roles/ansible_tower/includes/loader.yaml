@@ -1,0 +1,35 @@
+---
+- name: set ansible_tower_catalog_path
+  set_fact:
+    ansible_tower_catalog_path: "{{ role_path }}/vars/{{ ansible_tower_catalog_item }}"
+  when:
+    - ansible_tower_catalog_item != 'custom'
+
+- name: set custom ansible_tower_catalog_vars_file
+  set_fact:
+    ansible_tower_catalog_path: "{{ ansible_tower_custom_catalog_path }}"
+  when:
+    - ansible_tower_catalog_item == 'custom'
+
+- name: display message to stdout
+  debug:
+    msg: "using ansible tower catalog {{ ansible_tower_catalog_path }}"
+
+- name: initialize ansible_tower_vars
+  set_fact:
+    ansible_tower_vars: {}
+
+- name: update ansible_tower_vars
+  include_tasks: "{{ role_path }}/includes/load_vars.yaml"
+  loop:
+    - credentials
+    - teams
+    - users
+    - inventory
+    - projects
+    - job_templates
+
+- debug: var=ansible_tower_vars
+
+- name: include tower specific tasks
+  include_tasks: "{{ role_path }}/includes/installer.yaml"

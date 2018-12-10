@@ -3,7 +3,7 @@
     - name: configure tower inventory
       tower_inventory:
         name: "{{ item.name }}"
-        organization: "{{ item.organization | default(default_tower_organization) }}"
+        organization: "{{ item.organization | default(ansible_tower_default_organization) }}"
 
         description: "{{ item.description | default(omit) }}"
         variables: "{{ item.variables | default(omit) }}"

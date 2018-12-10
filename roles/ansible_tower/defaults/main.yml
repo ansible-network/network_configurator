@@ -1,4 +1,11 @@
 ---
 # defaults file for ansible_tower
 #
-default_tower_organization: Default
+ansible_tower_default_organization: Default
+
+ansible_tower_custom_catalog_path: "{{ playbook_dir }}/vars"
+
+tower_host: "{{ ansible_host }}"
+tower_username: "{{ ansible_user }}"
+tower_password: "{{ ansible_password }}"
+tower_state: present
