@@ -78,8 +78,8 @@ class Parser(configparser.ConfigParser):
 
 
 class Settings(object):
-    """A class that understands configurations provided to tower-cli through configuration files
-    or runtime parameters. A signleton object ``tower_cli.conf.settings`` will be instantiated and used.
+    """A class that understands configurations provided to tower module through configuration files
+    or runtime parameters. A singleton object will be instantiated and used.
 
     The 5 levels of precedence for settings, listing from least to greatest, are:
 
@@ -315,7 +315,7 @@ class Settings(object):
 
 
 def config_from_environment():
-    """Read tower-cli config values from the environment if present, being
+    """Read tower config values from the environment if present, being
     careful not to override config values that were explicitly passed in.
     """
     kwargs = {}
