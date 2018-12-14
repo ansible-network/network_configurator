@@ -23,7 +23,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 ---
 lookup: ansible tower
-author: Sumit Jaiswal <sjaiswal@redhat.com>
+author: Sumit Jaiswal (@sjaiswal@redhat.com)
 version_added: "2.8"
 short_description: Query Ansible Tower objects
 description:
