@@ -111,10 +111,6 @@ class AnsibleTowerModule(AnsibleTowerBase):
         '''
         result = {'changed': False}
         response = self.get_object_ref(module)
-        if response.count != 0:
-            pass
-        else:
-            pass
 
     def get_object_ref(self, tower_module):
         tower_module = '/' + tower_module + '/'
